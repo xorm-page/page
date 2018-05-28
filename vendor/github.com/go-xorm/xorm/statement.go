@@ -624,7 +624,7 @@ func (statement *Statement) Select(str string) *Statement {
 func (statement *Statement) Cols(columns ...string) *Statement {
 	cols := col2NewCols(columns...)
 	for _, nc := range cols {
-		statement.columnMap.add(nc)
+		statement.columnMap = append(statement.columnMap, nc)
 	}
 
 	newColumns := statement.colmap2NewColsWithQuote()

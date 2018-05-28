@@ -16,12 +16,12 @@
 [[projects]]
   name = "github.com/go-xorm/xorm"
   packages = ["."]
-  revision = "d85bb4911c725a53b135fc12862748a41b6c07da"
-  version = "v0.7.0"
+  revision = "fc1b13e0d8e240788213230aa5747eb557f80f41"
+  version = "v0.6.6"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b46a5ca3734fafb9e3227a8eadb7beea65f3871ebed4d3cd7ef03b5f6c18e9ac"
+  inputs-digest = "b536fbd89a10f33e81ef7833ff25c08f14d28cc361d8f0b6ef7e73a67aa3c74e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,5 +1,3 @@
-# xorm
-
 [中文](https://github.com/go-xorm/xorm/blob/master/README_CN.md)
 
 Xorm is a simple and powerful ORM for Go.
@@ -8,7 +6,7 @@ Xorm is a simple and powerful ORM for Go.
 [![](https://goreportcard.com/badge/github.com/go-xorm/xorm)](https://goreportcard.com/report/github.com/go-xorm/xorm) 
 [![Join the chat at https://img.shields.io/discord/323460943201959939.svg](https://img.shields.io/discord/323460943201959939.svg)](https://discord.gg/HuR2CF3)
 
-## Features
+# Features
 
 * Struct <-> Table Mapping Support
 
@@ -34,7 +32,7 @@ Xorm is a simple and powerful ORM for Go.
 
 * Postgres schema support
 
-## Drivers Support
+# Drivers Support
 
 Drivers for Go's sql package which currently support database/sql includes:
 
@@ -52,17 +50,48 @@ Drivers for Go's sql package which currently support database/sql includes:
 
 * Oracle: [github.com/mattn/go-oci8](https://github.com/mattn/go-oci8) (experiment)
 
-## Installation
+# Changelog
+
+* **v0.6.6**
+    * Some bugs fixed
+
+* **v0.6.5**
+    * Postgres schema support
+    * vgo support
+    * Add FindAndCount
+    * Database special params support via NewEngineWithParams
+    * Some bugs fixed
+
+* **v0.6.4**
+    * Automatical Read/Write seperatelly
+    * Query/QueryString/QueryInterface and action with Where/And
+    * Get support non-struct variables
+    * BufferSize on Iterate
+    * fix some other bugs.
+
+* **v0.6.3**
+    * merge tests to main project
+    * add `Exist` function
+    * add `SumInt` function
+    * Mysql now support read and create column comment.
+    * fix time related bugs.
+    * fix some other bugs.
+
+[More changes ...](https://github.com/go-xorm/manual-en-US/tree/master/chapter-16)
+
+# Installation
 
 	go get github.com/go-xorm/xorm
 
-## Documents
+# Documents
 
 * [Manual](http://xorm.io/docs)
 
 * [GoDoc](http://godoc.org/github.com/go-xorm/xorm)
 
-## Quick Start
+* [GoWalker](http://gowalker.org/github.com/go-xorm/xorm)
+
+# Quick Start
 
 * Create Engine
 
@@ -358,52 +387,7 @@ if _, err := session.Exec("delete from userinfo where username = ?", user2.Usern
 return session.Commit()
 ```
 
-## Contributing
-
-If you want to pull request, please see [CONTRIBUTING](https://github.com/go-xorm/xorm/blob/master/CONTRIBUTING.md). And we also provide [Xorm on Google Groups](https://groups.google.com/forum/#!forum/xorm) to discuss.
-
-## Credits
-
-### Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="graphs/contributors"><img src="https://opencollective.com/xorm/contributors.svg?width=890&button=false" /></a>
-
-### Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/xorm#backer)]
-
-<a href="https://opencollective.com/xorm#backers" target="_blank"><img src="https://opencollective.com/xorm/backers.svg?width=890"></a>
-
-### Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/xorm#sponsor)]
-
-## Changelog
-
-* **v0.7.0**
-    * Some bugs fixed
-
-* **v0.6.6**
-    * Some bugs fixed
-
-* **v0.6.5**
-    * Postgres schema support
-    * vgo support
-    * Add FindAndCount
-    * Database special params support via NewEngineWithParams
-    * Some bugs fixed
-
-* **v0.6.4**
-    * Automatical Read/Write seperatelly
-    * Query/QueryString/QueryInterface and action with Where/And
-    * Get support non-struct variables
-    * BufferSize on Iterate
-    * fix some other bugs.
-
-[More changes ...](https://github.com/go-xorm/manual-en-US/tree/master/chapter-16)
-
-## Cases
+# Cases
 
 * [studygolang](http://studygolang.com/) - [github.com/studygolang/studygolang](https://github.com/studygolang/studygolang)
 
@@ -439,6 +423,15 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 * [go-blog](http://wangcheng.me) - [github.com/easykoo/go-blog](https://github.com/easykoo/go-blog)
 
-## LICENSE
+# Discuss
 
-BSD License [http://creativecommons.org/licenses/BSD/](http://creativecommons.org/licenses/BSD/)
+Please visit [Xorm on Google Groups](https://groups.google.com/forum/#!forum/xorm)
+
+# Contributing
+
+If you want to pull request, please see [CONTRIBUTING](https://github.com/go-xorm/xorm/blob/master/CONTRIBUTING.md)
+
+# LICENSE
+
+ BSD License
+ [http://creativecommons.org/licenses/BSD/](http://creativecommons.org/licenses/BSD/)

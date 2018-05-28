@@ -1091,25 +1091,7 @@ func (engine *Engine) idOfV(rv reflect.Value) (core.PK, error) {
 	pk := make([]interface{}, len(table.PrimaryKeys))
 	for i, col := range table.PKColumns() {
 		var err error
-
-		fieldName := col.FieldName
-		for {
-			parts := strings.SplitN(fieldName, ".", 2)
-			if len(parts) == 1 {
-				break
-			}
-
-			v = v.FieldByName(parts[0])
-			if v.Kind() == reflect.Ptr {
-				v = v.Elem()
-			}
-			if v.Kind() != reflect.Struct {
-				return nil, ErrUnSupportedType
-			}
-			fieldName = parts[1]
-		}
-
-		pkField := v.FieldByName(fieldName)
+		pkField := v.FieldByName(col.FieldName)
 		switch pkField.Kind() {
 		case reflect.String:
 			pk[i], err = engine.idTypeAssertion(col, pkField.String())
@@ -1188,7 +1170,7 @@ func (engine *Engine) Sync(beans ...interface{}) error {
 
 	for _, bean := range beans {
 		v := rValue(bean)
-		tableNameNoSchema := engine.TableName(bean)
+		tableNameNoSchema := engine.tbNameNoSchema(v.Interface())
 		table, err := engine.autoMapType(v)
 		if err != nil {
 			return err

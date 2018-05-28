@@ -27,7 +27,7 @@
 
 [[constraint]]
   name = "github.com/go-xorm/xorm"
-  version = "0.7.0"
+  version = "0.6.6"
 
 [prune]
   go-tests = true
