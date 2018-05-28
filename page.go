@@ -55,7 +55,6 @@ type Page struct {
 	Pages     int64       `json:"pages,omitempty"`
 	Total     int64       `json:"total,omitempty"`
 	Data      interface{} `json:"data"`
-	dataType  interface{}
 }
 
 //NewPage page
