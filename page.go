@@ -54,7 +54,7 @@ type Page struct {
 	PageSize  int         `json:"page_size,omitempty"`
 	Pages     int64       `json:"pages,omitempty"`
 	Total     int64       `json:"total,omitempty"`
-	Data      interface{} `json:"data,omitempty"`
+	Data      interface{} `json:"data"`
 	dataType  interface{}
 }
 
@@ -84,7 +84,7 @@ func (p *Builder) total(total int64) *Builder {
 
 //Data set page data
 func (p *Builder) Data(dataType interface{}) *Builder {
-	p.page.dataType = dataType
+	p.page.Data = dataType
 	return p
 }
 
@@ -103,38 +103,35 @@ func (p *Builder) Build() (*Page, error) {
 	p.page.PageIndex = p.pageable.PageIndex
 	p.page.PageSize = p.pageable.PageSize
 
+	sc := p.session.Clone()
+	if reflect.TypeOf(p.page.Data).Elem().Kind() != reflect.Slice {
+		return nil, fmt.Errorf("Data() parameter must be a slice pointer,not %v", reflect.TypeOf(p.page.Data))
+	}
+	Logger().Debugf("type: %+v\n", reflect.TypeOf(p.page.Data))
+	Logger().Debugf("type: %+v\n", reflect.TypeOf(p.page.Data).Elem().Elem())
+	elementType := reflect.TypeOf(p.page.Data).Elem().Elem()
+	element := reflect.New(elementType)
+	count, err := sc.Count(element.Interface())
+	if err != nil {
+		return nil, fmt.Errorf("Get count failed,err=%s", err)
+	}
+
+	p.total(count)
+	Logger().Debugf("limit: %d,%d", p.pageable.PageSize, p.pageable.offset())
+	err = p.session.Limit(p.pageable.PageSize, p.pageable.offset()).Find(p.page.Data)
+	if err != nil {
+		Logger().Debug(err)
+		return nil, err
+	}
+
+	Logger().Debugf("DATA :%+v\n", p.page.Data)
+	Logger().Debugf("index:%d,size:%d\n", p.pageable.PageIndex, p.pageable.PageSize)
+
 	if p.page.Total%int64(p.page.PageSize) == 0 {
 		p.page.Pages = p.page.Total / int64(p.page.PageSize)
 	} else {
 		p.page.Pages = p.page.Total/int64(p.page.PageSize) + 1
 	}
-
-	sc := p.session.Clone()
-
-	count, err := sc.Count(p.page.dataType)
-	if err != nil {
-		return nil, fmt.Errorf("Get count failed,err=%s", err)
-	}
-	sliceType := reflect.SliceOf(reflect.TypeOf(p.page.dataType))
-	slice := reflect.MakeSlice(sliceType, 0, p.page.PageSize)
-
-	// Create a pointer to a slice value and set it to the slice
-	pointer := reflect.New(slice.Type())
-	pointer.Elem().Set(slice)
-
-	// collection.Find(bson.M{}).All(dataPointer.Interface())
-	// p.page.Data = reflect.New(dataSlice)
-	Logger().Debugf("type: %+v\n", reflect.TypeOf(pointer.Interface()))
-	p.total(count)
-	Logger().Debugf("limit: %d,%d", p.pageable.PageSize, p.pageable.offset())
-	err = p.session.Limit(p.pageable.PageSize, p.pageable.offset()).Find(pointer.Interface())
-	if err != nil {
-		Logger().Debug(err)
-	}
-	Logger().Debugf("pionter: %+v", pointer)
-	p.page.Data = pointer
-	Logger().Debugf("DATA :%+v\n", p.page.Data)
-	Logger().Debugf("index:%d,size:%d\n", p.pageable.PageIndex, p.pageable.PageSize)
 	defer p.session.Close()
 	return &(p.page), nil
 }
