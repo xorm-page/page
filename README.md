@@ -5,7 +5,9 @@ go get github.com/xorm-page/page
 ```
 - query
 ``` go
-var pkgs []Package
+// FindByCondition dynamic query
+func (p *PackageMapper) FindByCondition(condition *Package, pa *page.Pageable) (*page.Page, error) {
+	var pkgs []Package
 	session := engine.Alias("p").Where("1=1")
 	if condition != nil {
 		if condition.UserID != "" {
@@ -18,6 +20,7 @@ var pkgs []Package
 	}
 
 	return page.NewBuilder().Page(pa).Session(session).Data(&pkgs).Build()
+}
 ```
 - Response body for rest api by unmarshal 'Page' struct.
 ```json
