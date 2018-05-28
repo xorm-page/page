@@ -2,6 +2,7 @@ package page
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/go-xorm/xorm"
 )
@@ -54,6 +55,7 @@ type Page struct {
 	Pages     int64       `json:"pages,omitempty"`
 	Total     int64       `json:"total,omitempty"`
 	Data      interface{} `json:"data,omitempty"`
+	dataType  interface{}
 }
 
 //NewPage page
@@ -81,8 +83,8 @@ func (p *Builder) total(total int64) *Builder {
 }
 
 //Data set page data
-func (p *Builder) Data(data interface{}) *Builder {
-	p.page.Data = data
+func (p *Builder) Data(dataType interface{}) *Builder {
+	p.page.dataType = dataType
 	return p
 }
 
@@ -109,12 +111,18 @@ func (p *Builder) Build() (*Page, error) {
 
 	sc := p.session.Clone()
 
-	count, err := sc.Count(p.page.Data)
+	count, err := sc.Count(p.page.dataType)
 	if err != nil {
 		return nil, fmt.Errorf("Get count failed,err=%s", err)
 	}
+	dataSlice := reflect.SliceOf(reflect.TypeOf(p.page.dataType))
+	p.page.Data = reflect.MakeSlice(dataSlice, 10, p.page.PageSize)
+	// p.page.Data = reflect.New(dataSlice)
+	Logger().Debugf("type: %+v\n", reflect.TypeOf(p.page.Data))
 	p.total(count)
-	p.session.Limit(p.pageable.PageSize, p.pageable.offset()).Find(p.page.Data)
+	p.session.Limit(p.pageable.PageSize, p.pageable.offset()).Find(&p.page.Data)
+	Logger().Debugf("DATA :%+v\n", p.page.Data)
+	Logger().Debugf("index:%d,size:%d\n", p.pageable.PageIndex, p.pageable.PageSize)
 	defer p.session.Close()
 	return &(p.page), nil
 }
