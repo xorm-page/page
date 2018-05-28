@@ -16,8 +16,8 @@ type Sort struct {
 type Pageable struct {
 	PageIndex int
 	PageSize  int
-	offset    int
-	Sort      Sort
+	// offset    int
+	Sort Sort
 }
 
 //SetDefault default page
@@ -43,11 +43,8 @@ func (p *Pageable) Check() error {
 }
 
 //Offset db start
-func (p *Pageable) Offset() int {
-	if p.offset == 0 {
-		p.offset = (p.PageIndex - 1) * p.PageSize
-	}
-	return p.offset
+func (p *Pageable) offset() int {
+	return (p.PageIndex - 1) * p.PageSize
 }
 
 //Page page
@@ -78,7 +75,7 @@ func (p *Builder) Page(pa *Pageable) *Builder {
 }
 
 //Total set total elments & total pages
-func (p *Builder) Total(total int64) *Builder {
+func (p *Builder) total(total int64) *Builder {
 	p.page.Total = total
 	return p
 }
@@ -110,7 +107,14 @@ func (p *Builder) Build() (*Page, error) {
 		p.page.Pages = p.page.Total/int64(p.page.PageSize) + 1
 	}
 
-	p.session.Limit(p.pageable.PageSize, p.pageable.Offset()).Find(p.page.Data)
+	sc := p.session.Clone()
+
+	count, err := sc.Count(p.page.Data)
+	if err != nil {
+		return nil, fmt.Errorf("Get count failed,err=%s", err)
+	}
+	p.total(count)
+	p.session.Limit(p.pageable.PageSize, p.pageable.offset()).Find(p.page.Data)
 	defer p.session.Close()
 	return &(p.page), nil
 }
