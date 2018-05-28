@@ -64,39 +64,39 @@ func NewPage(data interface{}) *Page {
 	return &Page{}
 }
 
-//PageBuilder page builder
-type PageBuilder struct {
+//Builder page builder
+type Builder struct {
 	pageable *Pageable
 	page     Page
 	session  *xorm.Session
 }
 
 //Page init page index & size
-func (p *PageBuilder) Page(pa *Pageable) *PageBuilder {
+func (p *Builder) Page(pa *Pageable) *Builder {
 	p.pageable = pa
 	return p
 }
 
 //Total set total elments & total pages
-func (p *PageBuilder) Total(total int64) *PageBuilder {
+func (p *Builder) Total(total int64) *Builder {
 	p.page.Total = total
 	return p
 }
 
 //Data set page data
-func (p *PageBuilder) Data(data interface{}) *PageBuilder {
+func (p *Builder) Data(data interface{}) *Builder {
 	p.page.Data = data
 	return p
 }
 
 //Session set xorm session
-func (p *PageBuilder) Session(session *xorm.Session) *PageBuilder {
+func (p *Builder) Session(session *xorm.Session) *Builder {
 	p.session = session
 	return p
 }
 
 //Build return page struct
-func (p *PageBuilder) Build() (*Page, error) {
+func (p *Builder) Build() (*Page, error) {
 	err := p.pageable.Check()
 	if err != nil {
 		return nil, fmt.Errorf("Pageable error,err=%s", err)
@@ -115,16 +115,16 @@ func (p *PageBuilder) Build() (*Page, error) {
 	return &(p.page), nil
 }
 
-//NewPageBuilder new page builder
-func NewPageBuilder() *PageBuilder {
-	return &PageBuilder{}
+//NewBuilder new page builder
+func NewBuilder() *Builder {
+	return &Builder{}
 }
 
 // PageableMapper pageable base mapper
 type PageableMapper struct {
 }
 
-//PageBuilder get mapper pagebuilder
-func (p *PageableMapper) PageBuilder() *PageBuilder {
-	return NewPageBuilder()
+//Builder get mapper Builder
+func (p *PageableMapper) Builder() *Builder {
+	return NewBuilder()
 }
